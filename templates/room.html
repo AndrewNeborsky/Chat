@@ -1,0 +1,176 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Room</title>
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <style>
+        #content{
+            flex-grow: 1;
+            padding: 20px 10px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        #content-input{
+            background: rgb(45, 82, 227);
+            border-radius: 10px;
+        }
+        #content-input input.text{
+            width: 650px;
+            height: 20px;
+            padding: 0 10px;
+            border-radius: 10px 0 0 10px;
+            outline: none;
+        }
+        #content-input input.button{
+            height: 20px;
+            padding: 0 10px;
+            border-radius: 0 10px 10px 0;
+            background: rgb(45, 82, 227);
+            border: rgb(45, 82, 227);
+            outline: none;
+            color: white;
+        }
+        #content-area{
+            height: 500px;
+            width: 750px;
+            border: solid 2px rgba(128, 128, 128, 0.3);
+            background: rgb(235, 240, 244);
+            border-radius: 10px;
+            overflow: auto;
+        }
+        .content-area-message, #content-users-text{
+            width: fit-content;
+            padding: 5px;
+            background: rgb(255, 255, 255);
+            border-radius: 5px;
+            margin: 5px;
+        }
+        .content-area-user_message{
+            width: fit-content;
+            padding: 5px;
+            background: rgb(214, 231, 249);
+            border-radius: 5px;
+            margin: 5px 5px 5px auto;
+        }
+        .content-area-enter_exit{
+            margin: 5px;
+            text-align: center;
+        }
+        #content-users{
+            min-height: 38px;
+            max-height: 84px;
+            width: 750px;
+            border: solid 2px rgba(128, 128, 128, 0.3);
+            background: rgb(235, 240, 244);
+            border-radius: 10px;
+            overflow: auto;
+
+            display: flex;
+            flex-direction: row;
+        }
+        .users{
+            width: fit-content;
+            padding: 5px;
+            background: rgb(214, 231, 249);
+            border-radius: 5px;
+            margin: 5px 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="header">
+        <div>
+            <a href="{% url 'index' %}"><img id="logo" src="{% static 'Logo.png' %}" alt=""/> </a>
+        </div>
+        <div>
+        Hello, <a href="{% url 'personal_area' user_name=username %}">{{ username }}</a>!
+        <a href="{% url "logout" %}">Sing out</a>
+        </div>
+    </div>
+    <div id="content">
+        <div id="content-users">
+            <div id="content-users-text">Users in room:</div>
+        </div><br>
+        <div id="content-area"></div><br/>
+        <div id="content-input">
+            <label for="content-input-text"></label>
+            <input id="content-input-text" type="text" class="text" spellcheck="true"/>
+            <input id="content-input-submit" type="button" class="button" value="Send" onclick="send_message(event)"/>
+        </div>
+    </div>
+    <div id="footer"></div>
+</body>
+
+<script>
+    const chatSocket = new WebSocket(
+        'ws://' + window.location.host + '/ws/room/' + {{ room_name }} + '/');
+
+    chatSocket.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        const message = data['message'];
+        const user = data['user'];
+        const users_in_room = data['users_in_room'];
+
+        let div = document.createElement('div');
+        if (user === '~'){
+            div.className = "content-area-enter_exit";
+            div.innerHTML = '------------{ ' + message + ' }------------';
+        } else if ('{{ username }}' === user) {
+            div.className = "content-area-user_message";
+            div.innerHTML = message;
+        } else {
+            div.className = "content-area-message";
+            div.innerHTML = '<a href="/users/' + user +'/" target="_blank">' + user + '</a>: ' + message;
+        }
+        const block = document.querySelector('#content-area');
+        block.appendChild(div);
+        block.scrollTop = block.scrollHeight;
+
+        if (user === '~') {
+            const container = document.querySelector('#content-users');
+            while (container.lastChild) {
+                if (container.lastChild.textContent === 'Users in room:')
+                    break;
+                container.removeChild(container.lastChild);
+            }
+
+            for (let i = 0; i < users_in_room.length; i++) {
+                div = document.createElement('div');
+                div.className = "users";
+                div.innerHTML = '<a href="/users/' + users_in_room[i] + '/" target="_blank">' + users_in_room[i] + '</a>';
+                document.querySelector('#content-users').appendChild(div);
+            }
+        }
+    };
+
+    chatSocket.onclose = function() {
+        alert('Chat socket closed unexpectedly');
+    };
+
+    document.querySelector('#content-input-text').focus();
+    document.querySelector('#content-input-text').onkeyup = function(event) {
+        if (event.code === 'Enter') {
+            document.querySelector('#content-input-submit').click();
+        }
+    };
+
+    const send_message = function() {
+        const messageInput = document.querySelector('#content-input-text');
+        const message = messageInput.value;
+        chatSocket.send(JSON.stringify({
+            'message': message,
+            'user': '{{ username }}'
+        }));
+
+        messageInput.value = '';
+    }
+</script>
+</html>

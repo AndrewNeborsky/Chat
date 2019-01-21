@@ -1,0 +1,108 @@
+{% extends 'personal_area.html' %}
+{% load static %}
+
+{% block style %}
+        #content-user-submit{
+            height: 25px;
+            font-size: 16px;
+            padding: 0 10px;
+            border-radius: 12px;
+            background: rgb(45, 82, 227);
+            border: rgb(45, 82, 227);
+            outline: none;
+            color: white;
+        }
+        #content-user-avatar{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: 200px;
+            height: 200px;
+            border-radius: 10px;
+            outline: 2px dashed rgb(93, 93, 93);
+            outline-offset: -12px;
+            background-color: rgb(216, 224, 231);
+            color: rgb(32, 46, 84);
+        }
+        #content-user-avatar label {
+             font-weight: bold;
+        }
+        #content-user-avatar label:hover {
+             cursor: pointer;
+             text-decoration: underline;
+        }
+        #content-user-avatar input[type=file]{
+            display: none;
+        }
+{% endblock %}
+
+{% block form %}
+    <form id="personal_area" enctype="multipart/form-data" method="post" action="{% url 'personal_area_change' %}">
+        {% csrf_token %}
+    </form>
+{% endblock %}
+
+{% block header %}
+    <div id="header">
+        <div>
+            <a href="{% url 'index' %}"><img id="logo" src="{% static 'Logo.png' %}" alt=""/> </a>
+        </div>
+        <div>
+        Hello, {{ user.username }}!
+        <a href="{% url "logout" %}">Sing out</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div id="content">
+        <div id="content-user">
+            <div  id="content-user-avatar" class="content-user">
+                <img src="{% static 'upload.png' %}" alt=""><br>
+                <label for="content-user-avatar-file">Выберите файл</label>
+                <input id="content-user-avatar-file" form="personal_area" type="file" name="avatar" accept="image/*"/>
+            </div>
+            <div>
+                <div id="content-user-username" class="content-user"><strong>Username:</strong> {{ user.username }}</div>
+                <div id="content-user-blocks">
+                    <div id="first_block" class="content-user">
+                        <div>
+                            <label for="content-user-first-name"><strong>First name:</strong></label>
+                            <input id="content-user-first-name" type="text" form="personal_area" name="first_name" value="{{ user.first_name }}"/>
+                        </div>
+                        <br>
+                        <div>
+                            <label for="content-user-age"><strong>Age:</strong></label>
+                            <input id="content-user-age" type="number" form="personal_area" name="age" value="{{ user.age }}"/>
+                        </div>
+                    </div>
+                    <div id="second_block" class="content-user">
+                        <div>
+                            <label for="content-user-last-name"><strong>Last name:</strong></label>
+                            <input id="content-user-last-name" type="text" form="personal_area" name="last_name" value="{{ user.last_name }}"/>
+                        </div>
+                        <br>
+                        <div>
+                            <label for="content-user-birthday"><strong>Birthday:</strong></label>
+                            <input id="content-user-birthday" type="date" form="personal_area" name="birthday" value="{{ user.birthday }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="content-user">
+                    <label for="content-user-phone"><strong>Phone:</strong></label>
+                    <input id="content-user-phone" type="text" form="personal_area" name="phone" value="{{ user.phone }}">
+                </div>
+                <div class="content-user">
+                    <label for="content-user-email"><strong>Email:</strong></label>
+                    <input id="content-user-email" type="email" form="personal_area" name="email" value="{{ user.email }}"/>
+                </div>
+                <div class="content-user">
+                    <label for="content-user-site"><strong>Site:</strong></label>
+                    <input id="content-user-site" type="url" form="personal_area" name="site" value="{{ user.site }}"/>
+                </div>
+                <input id="content-user-submit" class="content-user" type="submit" form="personal_area" value="Change">
+            </div>
+        </div>
+    </div>
+{% endblock %}

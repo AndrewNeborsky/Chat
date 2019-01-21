@@ -1,0 +1,53 @@
+{% extends 'login.html' %}
+{% load static %}
+
+{% block container %}
+        #login-container{
+            display: flex;
+            flex-direction: column;
+            justify-content: stretch;
+            width: 400px;
+            height: 240px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.15);
+            margin: 15% auto 0 auto;
+        }
+{% endblock %}
+
+{% block form %}
+    <form id="login" method="post" action="{% url 'register' %}">
+        {% csrf_token %}
+    </form>
+{% endblock %}
+
+{% block content %}
+    <div id="page-root">
+        <div id="login-container">
+            <div id="login-title">
+               Create your personal account:
+            </div>
+            <div id="login-form">
+                <label for="login-form-username">Username: </label>
+                <input id="login-form-username" form="login" name="username" required />
+                <label for="login-form-password">Password: </label>
+                <input id="login-form-password" form="login" name="password" type="password" required/>
+                <label for="login-form-confirm-password">Confirm password: </label>
+                <input id="login-form-confirm-password" form="login" type="password" required/>
+                <input id="login-form-submit" form="login" type="submit" value="Create an account" onclick="check_password(event)"/>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+<script>
+    const check_password = function (event) {
+        const input1 = document.getElementById("login-form-password");
+        const input2 = document.getElementById("login-form-confirm-password");
+        if (input1.value !== input2.value) {
+            event.stopImmediatePropagation();
+            event.preventDefault();
+        }
+    };
+</script>
+{% endblock %}

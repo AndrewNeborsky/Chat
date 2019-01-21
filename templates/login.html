@@ -1,0 +1,90 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    <style>
+        html{
+            height: 100%;
+        }
+        body{
+            min-height: 100%;
+            margin: 0;
+            background: rgb(250, 250, 250);
+            font-family: Verdana, sans-serif;
+        }
+        #login{
+            display: none;
+        }
+        {% block container %}
+        #login-container{
+            display: flex;
+            flex-direction: column;
+            justify-content: stretch;
+            width: 400px;
+            height: 190px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.15);
+            margin: 20% auto 0 auto;
+        }
+        {% endblock %}
+        #login-container label{
+            display: block;
+        }
+        #login-container input{
+            display: block;
+            margin: 5px 0;
+            width: 100%;
+        }
+        #login-title{
+            background: rgb(45, 82, 227);
+            padding: 10px 20px;
+            color: gray;
+            font-size: 20px;
+            border-radius: 10px 10px 0 0;
+        }
+        #login-form{
+            background: rgb(222, 222, 222);
+            flex-grow: 1;
+            padding: 10px 10px;
+            border-radius: 0 0  10px 10px;
+        }
+        #login-form-submit{
+            width: unset;
+        }
+        #page-root{
+            padding: 1px;
+        }
+    </style>
+</head>
+
+<body>
+    {% block form %}
+    <form id="login" method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+    </form>
+    {% endblock %}
+
+    {% block content %}
+    <div id="page-root">
+        <div id="login-container">
+            <div id="login-title">
+               Please, sing in or <a href="{% url "register" %}">Sing up</a>
+            </div>
+            <div id="login-form">
+                <label for="login-form-username">Username: </label>
+                <input id="login-form-username" form="login" name="username" required />
+                <label for="login-form-password">Password: </label>
+                <input id="login-form-password" form="login" name="password" type="password" required/>
+                <input id="login-form-submit" form="login" type="submit" value="Sing in"/>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+</body>
+
+{% block script %}{% endblock %}
+</html>

@@ -1,0 +1,72 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Chat Rooms</title>
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <style>
+        #content{
+            flex-grow: 1;
+            margin: 20% auto 0 auto;
+        }
+        #content-input{
+            background: rgb(45, 82, 227);
+            border-radius: 22px;
+        }
+        #content-input input.text{
+            width: 800px;
+            height: 45px;
+            font-size:25px;
+            padding: 0 10px;
+            border-radius: 22px 0 0 22px;
+            outline: none;
+        }
+        #content-input input.button{
+            height: 45px;
+            font-size:25px;
+            padding: 0 10px;
+            border-radius: 0 22px 22px 0;
+            background: rgb(45, 82, 227);
+            border: rgb(45, 82, 227);
+            outline: none;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <form id="room" method="post" action="{% url 'index' %}">
+        {% csrf_token %}
+    </form>
+
+    <div id="header">
+        <div>
+            <a href="{% url 'index' %}"><img id="logo" src="{% static 'Logo.png' %}" alt=""/> </a>
+        </div>
+        <div>
+            Hello, {% if username %}<a href="{% url 'personal_area' user_name=username %}">{{ username }}</a>{% else %}guest{% endif %}!
+        {% if username %}
+        <a href="{% url "logout" %}">Sing out</a>
+        {% else %}
+        <a href="{% url "login" %}">Sing in</a>
+        {% endif %}
+        </div>
+    </div>
+    <div id="content">
+        <div id="content-input">
+            {% if username %}
+            <input id="content-input-text" form="room" type="text" class="text" name="room_name"
+                   placeholder="What chat room would you like to enter?" pattern="\w+" required/>
+            <input id="content-input-submit" form="room" type="submit" class="button" value="Enter"/>
+            {% else %}
+            <input type="text" class="text" placeholder="Please, sing in" readonly/>
+            <input type="button" class="button" value="Enter"/>
+            {% endif %}
+        </div>
+    </div>
+    <div id="footer"></div>
+</body>
+</html>

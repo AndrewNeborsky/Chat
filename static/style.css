@@ -1,0 +1,28 @@
+html{
+    height: 100%;
+}
+body{
+    min-height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    align-items: stretch;
+    background: white;
+}
+#header{
+    background: rgb(45, 82, 227);
+    height: 80px;
+    padding: 0 10px;
+    font-size: 20px;
+    box-shadow: 0 3px 3px 0 rgba(45, 82, 227, 0.5);
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+#footer{
+    background: rgb(45, 82, 227);
+    height: 30px;
+}

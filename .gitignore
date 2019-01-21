@@ -1,6 +1,6 @@
 venv/
 .idea/
 migrations/
-static/
+media/
 *.pyc
 *.sqlite3

@@ -1,0 +1,91 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>{{ user.username }}</title>
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <style>
+        #content{
+            flex-grow: 1;
+
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+        #content-user{
+            padding: 20px;
+
+            display: flex;
+            flex-direction: row;
+        }
+        #content-user-blocks{
+            display: flex;
+            flex-direction: row;
+        }
+        .content-user {
+            margin: 20px;
+            font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+        }
+        {% block style %}
+        #content-user-image{
+            border-radius: 10px;
+            width: 200px;
+            height: 200px;
+        }
+        #content-change{
+            padding: 10px;
+        }
+        {% endblock %}
+    </style>
+</head>
+
+<body>
+    {% block form %}{% endblock %}
+
+    {% block header %}
+    <div id="header">
+        <div>
+            <a href="{% url 'index' %}"><img id="logo" src="{% static 'Logo.png' %}" alt=""/> </a>
+        </div>
+        <div>
+        Hello, {{ username }}!
+        <a href="{% url "logout" %}">Sing out</a>
+        </div>
+    </div>
+    {% endblock %}
+
+    {% block content %}
+    <div id="content">
+        <div style="margin: 0 auto 0 0"></div>
+        <div id="content-user">
+            <img id="content-user-image" class="content-user" src="{% if user.avatar %}{{ user.avatar }}{% else %}{% static 'default.png' %}{% endif %}" alt=""/>
+            <div>
+                <div id="content-user-username" class="content-user"><strong>Username:</strong> {{ user.username }}</div>
+                <div id="content-user-blocks">
+                    <div id="first_block" class="content-user">
+                        {% if user.first_name %}<div><strong>First name:</strong> {{ user.first_name }}</div><br>{% endif %}
+                        {% if user.age %}<div><strong>Age:</strong> {{ user.age }}</div>{% endif %}
+                    </div>
+                    <div id="second_block" class="content-user">
+                        {% if user.last_name %}<div><strong>Last name:</strong> {{ user.last_name }}</div><br>{% endif %}
+                        {% if user.birthday %}<div><strong>Birthday:</strong> {{ user.birthday }}</div>{% endif %}
+                    </div>
+                </div>
+                {% if user.phone %}<div class="content-user"><strong>Phone:</strong> {{ user.phone }}</div>{% endif %}
+                {% if user.email %}<div class="content-user"><strong>Email:</strong> {{ user.email }}</div>{% endif %}
+                {% if user.site %}<div class="content-user"><strong>Site:</strong> {{ user.site }}</div>{% endif %}
+            </div>
+        </div>
+        <div id="content-change" style="margin: 0 0 0 auto">
+            {% if username == user.username %}
+                <a href="{% url 'personal_area_change' %}"><img src="{% static 'change.png' %}" alt=""/></a>
+            {% endif %}
+        </div>
+    </div>
+    {% endblock %}
+    <div id="footer"></div>
+</body>
+</html>
